@@ -2,6 +2,7 @@ from .tradingview import tv_get_bars, tv_get_indicators, tv_screen
 from .backtest import bt_list_strategies, bt_run_backtest
 from .walk_forward import bt_walk_forward
 from .multi_tf_backtest import bt_forex_multitf, bt_forex_screen_multitf
+from .compare_configs import bt_compare_configs
 
 __all__ = [
     "tv_get_bars",
@@ -12,4 +13,5 @@ __all__ = [
     "bt_walk_forward",
     "bt_forex_multitf",
     "bt_forex_screen_multitf",
+    "bt_compare_configs",
 ]

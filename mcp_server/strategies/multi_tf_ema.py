@@ -24,31 +24,44 @@ class MultiTFEmaCross(bt.Strategy):
     params = (
         ("ema_fast", 20),
         ("ema_slow", 50),
-        ("ema_trend", 200),       # 4H trend EMA
+        ("ema_trend", 200),
         ("atr_period", 14),
-        ("atr_sl_mult", 1.5),     # SL = ATR × this
-        ("tp_rr", 2.0),           # TP at 2:1 RR
-        ("tp1_close_pct", 0.75),  # Close 75% at TP1
-        ("risk_pct", 0.01),       # 1% risk per trade
-        ("capital", 10000.0),     # Account capital in £
-        ("min_cycle_bars", 10),   # Daily EMA cross must be sustained ≥ N bars
-        ("allow_shorts", True),   # Trade both directions
+        ("atr_sl_mult", 1.5),
+        ("tp_rr", 2.0),
+        ("tp1_close_pct", 0.75),
+        ("risk_pct", 0.01),
+        ("capital", 10000.0),
+        ("min_cycle_bars", 10),
+        ("allow_shorts", True),
+        # ── Additional filters (set to 0/False to disable) ────────────
+        ("use_ema200_daily", False),  # Long only above Daily EMA200
+        ("adx_period", 14),
+        ("adx_threshold", 0.0),       # 0 = disabled; 20+ = active
+        ("adx_rising", False),        # Require ADX slope to be positive
+        ("atr_regime_bars", 0),       # 0 = disabled; 50 = use 50-bar ATR pct
+        ("atr_regime_low", 20.0),     # Ignore bottom N-pct ATR (dead market)
+        ("atr_regime_high", 80.0),    # Ignore top N-pct ATR (extreme volatility)
+        ("session_filter", False),    # Only trade London / NY sessions
     )
 
     def __init__(self):
-        # ── 4H indicators (datas[0]) — entry + stacking ──────────────
-        # Note: TradingView limits 1H forex history to ~10 months.
-        # 4H data gives 3+ years, so 4H is used as the execution TF.
-        # EMA20/50 on 4H acts as the "1H aligned" condition.
-        # EMA20/50/200 on 4H is the stacking check.
+        # ── 4H indicators (datas[0]) — entry, stacking, ADX, ATR ────────
+        # All optional filters use 4H indicators to avoid the long warmup
+        # that daily EMA200 (200 daily bars ≈ 10 months) would impose.
         self.ema20_4h  = bt.indicators.EMA(self.datas[0].close, period=self.p.ema_fast)
         self.ema50_4h  = bt.indicators.EMA(self.datas[0].close, period=self.p.ema_slow)
         self.ema200_4h = bt.indicators.EMA(self.datas[0].close, period=self.p.ema_trend)
         self.atr_4h    = bt.indicators.ATR(self.datas[0], period=self.p.atr_period)
+        self.adx_4h    = bt.indicators.AverageDirectionalMovementIndex(
+                             self.datas[0], period=self.p.adx_period)
 
-        # ── Daily indicators (datas[1]) — trend + cyclicity ──────────
+        # ── Daily indicators (datas[1]) — trend direction only ───────
+        # Only EMA20/50 used here (needs 50 daily bars ≈ 10 weeks — fast to init)
         self.ema20_d = bt.indicators.EMA(self.datas[1].close, period=self.p.ema_fast)
         self.ema50_d = bt.indicators.EMA(self.datas[1].close, period=self.p.ema_slow)
+
+        # Rolling ATR percentile window (volatility regime filter)
+        self._atr_window = []
 
         # Internal state
         self._daily_bull_bars  = 0   # consecutive bars EMA20>EMA50 on daily
@@ -79,15 +92,64 @@ class MultiTFEmaCross(bt.Strategy):
             return
 
         # ── Look for entries ─────────────────────────────────────────
+        # ── Maintain ATR regime window ────────────────────────────────
+        if self.p.atr_regime_bars > 0:
+            self._atr_window.append(self.atr_4h[0])
+            if len(self._atr_window) > self.p.atr_regime_bars:
+                self._atr_window.pop(0)
+
         if self._daily_bull_bars >= self.p.min_cycle_bars:
             if self._4h_bullish() and self._entry_bullish():
-                self._enter_long()
+                if self._passes_filters(direction=1):
+                    self._enter_long()
 
         elif self.p.allow_shorts and self._daily_bear_bars >= self.p.min_cycle_bars:
             if self._4h_bearish() and self._entry_bearish():
-                self._enter_short()
+                if self._passes_filters(direction=-1):
+                    self._enter_short()
 
     # ─────────────────────────────────────────────────────────────────
+    def _passes_filters(self, direction: int) -> bool:
+        """Return True if all active optional filters pass for the given direction."""
+
+        # ── EMA200 alignment (uses 4H EMA200 — always has sufficient bars) ──
+        if self.p.use_ema200_daily:
+            price_4h = self.datas[0].close[0]
+            ema200   = self.ema200_4h[0]
+            if direction == +1 and price_4h < ema200:
+                return False
+            if direction == -1 and price_4h > ema200:
+                return False
+
+        # ── ADX threshold (uses 4H ADX — consistent with all other filters) ──
+        if self.p.adx_threshold > 0:
+            adx_val = self.adx_4h[0]
+            if adx_val < self.p.adx_threshold:
+                return False
+            if self.p.adx_rising and len(self.adx_4h) > 1:
+                if self.adx_4h[0] <= self.adx_4h[-1]:
+                    return False
+
+        # ── ATR volatility regime ─────────────────────────────────────
+        if self.p.atr_regime_bars > 0 and len(self._atr_window) >= self.p.atr_regime_bars:
+            cur_atr = self.atr_4h[0]
+            sorted_w = sorted(self._atr_window)
+            n = len(sorted_w)
+            low_cut  = sorted_w[int(n * self.p.atr_regime_low  / 100)]
+            high_cut = sorted_w[int(min(n - 1, int(n * self.p.atr_regime_high / 100)))]
+            if cur_atr < low_cut or cur_atr > high_cut:
+                return False
+
+        # ── Session filter (London 07-17 UTC, NY overlap 13-21 UTC) ──
+        if self.p.session_filter:
+            bar_hour = self.datas[0].datetime.datetime(0).hour
+            in_london = 7 <= bar_hour < 17
+            in_ny     = 13 <= bar_hour < 21
+            if not (in_london or in_ny):
+                return False
+
+        return True
+
     def _4h_bullish(self):
         """EMA20 > EMA50 > EMA200 fully stacked bullish on 4H."""
         return (self.ema20_4h[0] > self.ema50_4h[0] > self.ema200_4h[0])
