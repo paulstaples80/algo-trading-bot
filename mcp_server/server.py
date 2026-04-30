@@ -17,6 +17,8 @@ from .tools import (
     bt_list_strategies as _bt_list_strategies,
     bt_run_backtest as _bt_run_backtest,
     bt_walk_forward as _bt_walk_forward,
+    bt_forex_multitf as _bt_forex_multitf,
+    bt_forex_screen_multitf as _bt_forex_screen_multitf,
 )
 
 mcp = FastMCP(
@@ -152,4 +154,70 @@ def bt_walk_forward(
         param_ranges, n_windows, in_sample_ratio, anchored,
         n_trials, initial_cash, commission
     )
+    return json.dumps(result, default=str)
+
+
+@mcp.tool()
+def bt_forex_multitf(
+    symbol: str,
+    exchange: str = "FX_IDC",
+    n_bars: int = 5000,
+    oos_months: int = 6,
+    capital: float = 10000.0,
+    commission: float = 0.00007,
+    atr_sl_mult: float = 1.5,
+    tp_rr: float = 2.0,
+    min_cycle_bars: int = 10,
+    allow_shorts: bool = True,
+) -> str:
+    """Run the Multi-Timeframe EMA 20/50 forex strategy backtest + 6-month OOS validation.
+
+    Strategy rules:
+      - Daily: EMA20 > EMA50 sustained for min_cycle_bars (bullish trend / cyclicity proxy)
+      - 4H   : EMA20 > EMA50 > EMA200 fully stacked
+      - 1H   : EMA20 > EMA50 — entry bar
+      - SL   : 1.5× ATR(14) on 1H
+      - TP1  : 2:1 RR → close 75%, runner stays open at BE
+      - Runner exit: BE stop hit OR Daily EMA20/50 flips opposite
+
+    Last oos_months of data is held out and never used in backtesting.
+
+    Args:
+        symbol: Forex pair e.g. 'EURUSD', 'GBPUSD', 'USDJPY'
+        exchange: TradingView exchange (default 'FX_IDC')
+        n_bars: 1H bars to fetch — 5000 ≈ 10 months for forex (default 5000)
+        oos_months: Months held out for OOS validation (default 6)
+        capital: Starting capital in account currency (default 10000)
+        commission: Per-trade commission as price fraction (default 0.00007 ≈ 0.7 pip)
+        atr_sl_mult: ATR multiplier for stop loss distance (default 1.5)
+        tp_rr: Take profit risk:reward ratio (default 2.0)
+        min_cycle_bars: Minimum daily bars EMA cross must be sustained (default 10)
+        allow_shorts: Include bearish setups (default True)
+    """
+    result = _bt_forex_multitf(
+        symbol, exchange, n_bars, oos_months, capital,
+        commission, atr_sl_mult, tp_rr, min_cycle_bars, allow_shorts,
+    )
+    return json.dumps(result, default=str)
+
+
+@mcp.tool()
+def bt_forex_screen_multitf(
+    symbols: list = None,
+    oos_months: int = 6,
+    capital: float = 10000.0,
+    n_bars: int = 5000,
+) -> str:
+    """Run the Multi-Timeframe EMA strategy across all 7 major forex pairs and rank by OOS Sharpe.
+
+    Pairs tested by default: EURUSD, GBPUSD, USDJPY, USDCHF, AUDUSD, NZDUSD, USDCAD.
+    Results ranked best → worst by out-of-sample Sharpe ratio.
+
+    Args:
+        symbols: Subset of pairs to test — omit to test all 7 majors
+        oos_months: Months held out for OOS validation (default 6)
+        capital: Starting capital per pair (default 10000)
+        n_bars: 1H bars to fetch per pair (default 5000)
+    """
+    result = _bt_forex_screen_multitf(symbols, oos_months, capital, n_bars)
     return json.dumps(result, default=str)
