@@ -19,6 +19,9 @@ from .tools import (
     bt_walk_forward as _bt_walk_forward,
     bt_forex_multitf as _bt_forex_multitf,
     bt_forex_screen_multitf as _bt_forex_screen_multitf,
+    bt_config_c_screen as _bt_config_c_screen,
+    bt_compare_configs as _bt_compare_configs,
+    bt_before_after as _bt_before_after,
 )
 
 mcp = FastMCP(
@@ -220,4 +223,89 @@ def bt_forex_screen_multitf(
         n_bars: 1H bars to fetch per pair (default 5000)
     """
     result = _bt_forex_screen_multitf(symbols, oos_months, capital, n_bars)
+    return json.dumps(result, default=str)
+
+
+@mcp.tool()
+def bt_config_c_screen(
+    symbols: list = None,
+    oos_months: int = 6,
+    capital: float = 10000.0,
+    n_bars: int = 5000,
+    commission: float = 0.00007,
+) -> str:
+    """Run Config C across all 7 major forex pairs via OANDA and rank by OOS Sharpe.
+
+    Config C = best-performing drawdown-reduced configuration:
+      - 0.5% risk per trade (vs 1% baseline)
+      - EMA200 4H alignment filter (structural trend only)
+      - ADX(14) > 20 AND rising (trend strength — no chop)
+      - SL = 1.5× ATR, TP = 2:1 RR, close 75% at TP, 25% runner
+
+    All 7 majors (EURUSD, GBPUSD, USDJPY, USDCHF, AUDUSD, NZDUSD, USDCAD) are run
+    against OANDA data (more reliable than FX_IDC for history).
+    Returns per-pair backtest + OOS metrics plus a portfolio-level summary.
+
+    Args:
+        symbols: Subset of pairs to test — omit to test all 7 majors
+        oos_months: Months held out for OOS validation (default 6)
+        capital: Starting capital per pair (default 10000)
+        n_bars: 4H bars to fetch per pair (default 5000 ≈ 3 years)
+        commission: Per-trade commission fraction (default 0.00007 ≈ 0.7 pip)
+    """
+    result = _bt_config_c_screen(symbols, oos_months, capital, n_bars, commission)
+    return json.dumps(result, default=str)
+
+
+@mcp.tool()
+def bt_compare_configs(
+    symbol: str = "EURUSD",
+    exchange: str = "OANDA",
+    n_bars: int = 5000,
+    oos_months: int = 6,
+    capital: float = 10000.0,
+    commission: float = 0.00007,
+) -> str:
+    """Run all 5 drawdown-reduction configurations side-by-side on the same dataset.
+
+    Configs: Baseline (1% risk), A (0.5% risk), B (+EMA200), C (+ADX>20), D (+3:1 TP full stack).
+    Returns a comparison table of backtest and OOS metrics for each config.
+
+    Args:
+        symbol: Forex pair to test (default EURUSD)
+        exchange: TradingView exchange (default OANDA)
+        n_bars: 4H bars to fetch (default 5000)
+        oos_months: Months held out for OOS (default 6)
+        capital: Starting capital (default 10000)
+        commission: Per-trade commission fraction (default 0.00007)
+    """
+    result = _bt_compare_configs(symbol, exchange, n_bars, oos_months, capital, commission)
+    return json.dumps(result, default=str)
+
+
+@mcp.tool()
+def bt_before_after(
+    symbol: str = "EURUSD",
+    exchange: str = "OANDA",
+    n_bars: int = 5000,
+    oos_months: int = 6,
+    capital: float = 10000.0,
+    commission: float = 0.00007,
+) -> str:
+    """Compare Config C (EMA crossover) vs EMAPullbackMomentum strategy side-by-side.
+
+    BEFORE: MultiTFEmaCross Config C — 0.5% risk, EMA200, ADX>20, 2:1 TP
+    AFTER:  EMAPullbackMomentum — pullback retest, MACD+RSI filters, 3-level TP (1.5R/3R/runner)
+
+    Returns backtest and OOS metrics for both strategies, plus OOS efficiency ratio.
+
+    Args:
+        symbol: Forex pair (default EURUSD)
+        exchange: TradingView exchange (default OANDA)
+        n_bars: 4H bars to fetch (default 5000)
+        oos_months: Months held out for OOS (default 6)
+        capital: Starting capital (default 10000)
+        commission: Per-trade commission fraction (default 0.00007)
+    """
+    result = _bt_before_after(symbol, exchange, n_bars, oos_months, capital, commission)
     return json.dumps(result, default=str)
