@@ -1,6 +1,6 @@
 # Scott Taylor — Evolution Markets FX Strategy
 ## Claude Code Knowledge Base & Coaching Framework
-**Version:** May 2026
+**Version:** May 2026 (updated 7 May 2026 — live session transcript refinements)
 **For use with Claude Code — live coaching, trade evaluation, real-time chart reading, and performance tracking.**
 
 This file teaches Claude the complete Scott Taylor trading methodology and provides the structured framework for live coaching, trade evaluation, compliance enforcement, and performance tracking. All refinements through May 2026 are incorporated.
@@ -188,6 +188,10 @@ Both PVP and SVP serve different purposes — use both.
 
 *Session continuation rule:* Once any major session low/high is swept and a V-shape forms with displacement above the swept level, the trade direction is locked for the day.
 
+*Failed new high warning:* If price sweeps a level, fails to create a new high, then rolls back below → this is an EARLY REVERSAL SIGNAL. Do not take longs from London low in this scenario. Expect a deeper draw to the 1H or 4H gap below. Scott: *"The fact that it's rejected here with wicks and then failed to take a new high is like the early sign of a reversal."*
+
+*Breakaway gaps in external structure:* In ATH territory with continuous volume to the upside, gaps left below may NOT fill — these are breakaway gaps. Do not wait for them as a prerequisite. Scott: *"Buy the dip basically."*
+
 ---
 
 ### 1.7 Confluence Scoring
@@ -232,6 +236,19 @@ Quality criteria:
 *Multi-level inefficiency rule:* If multiple voids exist above (or below) entry zone, confirmation candle must close beyond ALL voids, not just nearest.
 
 *Reversal leg quality:* Must reach at least 50% of the full pattern. If reversal only reaches 1:1 — weaker setup, reduce size.
+
+**5m Three-Candle Pattern Rule (Scott 7 May 2026):**
+For a valid 5m entry, THREE candles must leave the inefficiency — not two.
+- If the second candle immediately fills the gap → inefficiency is gone → no setup. Wait for next sequence.
+- Does NOT have to be the first 5m candle after the session opens. Can come anytime within the window.
+- Scott direct quote: *"Just because the market is moving doesn't mean we have to get involved. You wait. That's what you're supposed to do."*
+
+**15m Gap Rule Before Entry (Scott 7 May 2026):**
+If a 15m bearish inefficiency (sell-side gap) exists above price in a long setup:
+- Price MUST close a bullish 15m candle through the ENTIRE gap before taking longs
+- If gap is only partially filled → expect the next candle to reject → skip the trade
+- Partial fill = half a V-shape = not a valid setup
+- This overrides entry eagerness at session lows/London lows
 
 ---
 
@@ -307,6 +324,7 @@ Quality criteria:
 - [ ] 5. POC migration direction?
 - [ ] 6. Distance from value — overextension?
 - [ ] 7. Large recent candle — range expected?
+- [ ] 7a. NFP tomorrow? → Expect slow/choppy conditions today, reduce expectations
 - [ ] 8. Next unmitigated POC above and below
 - [ ] 9. 4H gaps and structural levels
 - [ ] 10. Most recent 15m high and low
@@ -437,6 +455,32 @@ Highest quality level: Weekly POC + Session POC in same zone, or Previous + Curr
 ### 3.4 The V-Shape Liquidity Grab
 Range builds → displacement sweeps liquidity → V-shapes back into range → runs to opposing liquidity. Entry on V-shape completion, NOT first touch of FVG.
 
+### 3.5a V-Shape Quality Check (Scott 7 May 2026)
+Before taking any candle pattern entry, check the reversal leg:
+1. Measure the full range: high to low of the sweep leg
+2. Has the recovery reached at least 50%? Ideally 60–70%+
+3. If recovery is less than 50% → "it's just half of a V" → skip it
+4. Scott: *"Whatever time frame you're looking at the candle pattern — just look at the range, high to low. Is the retracement anywhere near EQ? Because if it's not, it's probably not going to play."*
+
+This applies at ALL timeframes: 1m, 3m, 5m, 15m.
+
+### 3.5b Gamma / Quant Data as Confluence Booster (Scott 7 May 2026)
+Optional secondary confirmation — always do chart TA FIRST, then check gamma.
+- Large clustered calls at a price level → strong magnet, target zone confirmed
+- Large gaps between call clusters → expect choppy, non-directional price action
+- 30M+ calls at a level = significant. 1M calls = noise, not meaningful
+- If gamma is all red when your bias is bullish → reconsider everything
+- 95% of the time TA and gamma align. When they don't → stand aside
+- NEVER replace chart analysis with gamma. It is a confluence booster only.
+
+### 3.5c NFP Pre-Event Behaviour (Scott 7 May 2026)
+The day BEFORE NFP (typically Thursday) consistently produces:
+- Slow, choppy price action
+- No full-bodied candles
+- Failed attempts to create new highs/lows
+- Reduced follow-through on breakouts
+Action: Check ForexFactory at session start. If NFP tomorrow → reduce expectations, tighten criteria, lean toward no-trade.
+
 ### 3.5 NFT Signal
 At HIGH: bullish then immediate bearish = NFT bearish. At LOW: bearish then immediate bullish = NFT bullish. NFT means liquidity grab not continuation — opposite trade is high probability.
 
@@ -524,6 +568,7 @@ trade = {
     "entry_timing_correct": True,
     "management_correct": True,
     "lessons_learned": "string",
+    "psychology": "string",        # emotional state, FOMO, hesitation, revenge — honest self-assessment
     "session_rating": 0,           # trader's self-rating 1-10
     "scott_validated": False,
 }
