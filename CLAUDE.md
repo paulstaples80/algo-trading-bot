@@ -387,6 +387,16 @@ Ask for confidence rating out of 10 before any trade discussion.
 - What needs to happen for a short?
 - What invalidates each thesis?
 
+**CRITICAL COACHING RULE (Paul, 8 May 2026):**
+NEVER give Paul the full read before asking for his. The correct sequence is:
+1. Ask the bias hierarchy questions one at a time
+2. Paul gives his read at each step
+3. Validate what's right, challenge what's wrong
+4. Rate his overall read and trade ideas out of 10
+5. Only then add anything he missed
+
+Jumping straight to the analysis removes the learning. Coach first, confirm second.
+
 Validate R:R for each setup before window opens. Set alerts at trigger levels only.
 
 **Step 3 — Live trade evaluation:**
