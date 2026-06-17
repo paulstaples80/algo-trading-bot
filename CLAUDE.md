@@ -1,6 +1,6 @@
 # Scott Taylor — Evolution Markets FX Strategy
 ## Claude Code Knowledge Base & Coaching Framework
-**Version:** May 2026 (updated 7 May 2026 — live session transcript refinements)
+**Version:** June 2026 (updated 17 June 2026 — DAX window corrected, base risk confirmed 0.5%)
 **For use with Claude Code — live coaching, trade evaluation, real-time chart reading, and performance tracking.**
 
 This file teaches Claude the complete Scott Taylor trading methodology and provides the structured framework for live coaching, trade evaluation, compliance enforcement, and performance tracking. All refinements through May 2026 are incorporated.
@@ -29,16 +29,18 @@ This principle overrides all others. Stand-aside is always a valid choice. **No 
 
 | Instrument | Session | Window (UTC) |
 |---|---|---|
-| DAX (Germany 40) | London Open | 07:00–08:45 |
-| NQ (US Tech 100) | New York Open | 13:30–15:00 |
-| ES (US500) | New York Open | 13:30–15:00 |
+| DAX (Germany 40) | London Open | 08:00–10:30 BST |
+| NQ (US Tech 100) | New York Open | 14:30–16:00 BST (13:30–15:00 UTC) |
+| ES (US500) | New York Open | 14:30–16:00 BST (13:30–15:00 UTC) |
 
 **Day of week approach:**
-- Monday: Conservative, lighter risk, let market settle
+- Monday: Conservative, lighter risk, let market settle. **If Tuesday follows a Monday bank holiday, apply Monday rules to Tuesday.**
 - Tuesday: High conviction (but tempered by conditions)
 - Wednesday: Prime day
 - Thursday: Scott's best day historically
 - Friday: 2:1 and walk away, conservative always
+
+**First-trading-day-of-week rule (Scott 26 May 2026):** Whatever the calendar day, if it is the first trading day of the week (including after bank holidays), apply maximum patience. Only trade if the setup is undeniable. See Section 3.18.
 
 **Session window enforcement is non-negotiable.** Trades outside the killzone window break the framework regardless of pattern quality.
 
@@ -158,6 +160,14 @@ NFT (No Follow Through):
 - Override rule: 4H high/low/gap in that direction overrides IB
 - Don't trade the first 15 minutes of NY. Let initial balance print.
 
+**Asia → London Session Interaction Patterns (Scott June 2026):**
+Read how London opens relative to Asia to identify the day type before any entry is considered.
+- **Continuation:** London extends in Asia's direction → trend day. Look for continuation entries off pullbacks to gaps/POC.
+- **Side-by-side:** London consolidates within Asia's range → ranging day. Boundary trades only, reduced size, no entries inside the range.
+- **Reversal:** London takes the opposite direction → expect a deeper liquidity grab first. Wait for HTF confluence (session low sweep + gap mitigation) before entry. Do NOT enter on the first move against Asia — the deeper grab is still coming.
+
+*Application:* Identify the pattern within the first 30 minutes of London. It directly informs market mode (continuation = trending bias, side-by-side = range mode, reversal = pullback mode with deeper draw expected).
+
 ---
 
 ### 1.6 Key Levels to Mark
@@ -183,6 +193,8 @@ Both PVP and SVP serve different purposes — use both.
 - Order blocks (OB)
 
 *4H gap rule:* If a 4H gap was mitigated the previous day, expect 15m continuations the next day rather than another 4H gap mitigation.
+
+*4H gap close confirmation rule (Scott 26 May 2026):* A 4H candle must CLOSE above (or below) a gap to confirm direction. A wick through a gap with close below = potential rejection, not confirmation. See Section 3.14.
 
 *50% rule:* When targeting a gap, target no more than 50% of the gap.
 
@@ -317,18 +329,35 @@ If a 15m bearish inefficiency (sell-side gap) exists above price in a long setup
 
 ### 1.12 Pre-Session Checklist
 
+- [ ] 0. **Red folder news check** — search ForexFactory (or web) for high-impact news on EUR and USD today AND tomorrow:
+  - EUR events: ECB speakers, German/Eurozone CPI, GDP, PMI, industrial production
+  - USD events: CPI, NFP, FOMC, GDP, unemployment — note exact release time (BST)
+  - If red folder hits DURING DAX window (08:00–10:30 BST) → reduce size, tighten criteria, or stand aside
+  - If red folder hits post-window (e.g. 13:30 BST) → pre-positioning caution, raise bar on 5MCP quality
+  - If NFP tomorrow → apply Section 3.5c pre-event rules today
 - [ ] 1. Market mode — trending / pullback / range?
 - [ ] 2. Internal or external structure?
 - [ ] 3. Weekly POC — bias above or below?
 - [ ] 4. Session POC — intraday draw identified?
 - [ ] 5. POC migration direction?
 - [ ] 6. Distance from value — overextension?
+- [ ] 6a. **Range equilibrium check** — identify the current range (high to low) and mark the 50% midpoint (EQ):
+  - Price AT or NEAR EQ (within ~10% of midpoint) → elevated caution, reduce size or stand aside
+  - Price is most likely to react from range boundaries (top/bottom), NOT from EQ
+  - EQ trades have low edge — price can go either way from the middle
+  - If bias and pattern look good but price is at EQ → drop confidence by 2 points minimum
+  - Best entries: price near range low with long bias, or near range high with short bias
 - [ ] 7. Large recent candle — range expected?
 - [ ] 7a. NFP tomorrow? → Expect slow/choppy conditions today, reduce expectations
 - [ ] 8. Next unmitigated POC above and below
-- [ ] 9. 4H gaps and structural levels
+- [ ] 9. FVG audit — ALL timeframes marked:
+  - Daily FVG (above and below)
+  - 4H FVG (above and below)
+  - 1H FVG (above and below) ← commonly missed
+  - 15m FVG (above and below)
+  - Note: nested FVGs (e.g. 15m FVG inside a 1H FVG) = highest confluence entry zone
 - [ ] 10. Most recent 15m high and low
-- [ ] 11. 15m gaps (FVGs) marked
+- [ ] 11. 15m gaps (FVGs) marked — cross-check against step 9
 - [ ] 12. POST-ASIA CROSSOVER LOW — alert set
 - [ ] 13. Opening gap present?
 - [ ] 14. Initial balance box set
@@ -365,6 +394,9 @@ Entry accuracy is at the bottom of the list.
 
 **Step 1 — Pre-session (before window opens):**
 
+**FIRST — Red folder news search (Claude does this automatically):**
+Search the web for today's high-impact economic events on EUR and USD. Report findings before any chart analysis begins. Flag: event name, time (BST), expected impact. Adjust session risk rules accordingly.
+
 Ask the trader:
 - What day is it and what's the rule for that day?
 - Quick context check — anything happening geopolitically/macro?
@@ -386,6 +418,11 @@ Ask for confidence rating out of 10 before any trade discussion.
 - What needs to happen for a long?
 - What needs to happen for a short?
 - What invalidates each thesis?
+
+**FVG audit (ask every session — non-negotiable):**
+"Walk me through your FVGs at each timeframe — Daily, 4H, 1H, 15m. What's sitting above price and below price?"
+- If Paul hasn't mentioned 1H FVGs specifically → flag it: "Have you checked the 1H FVG? There may be a nested 15m FVG inside it — that's your highest confluence entry zone."
+- Nested FVGs (15m inside 1H, or 1H inside 4H) = highest quality entry zones. Always check for these before confirming a setup.
 
 **CRITICAL COACHING RULE (Paul, 8 May 2026):**
 NEVER give Paul the full read before asking for his. The correct sequence is:
@@ -420,7 +457,10 @@ Verify entry tier matches market mode (5m in pullback, 1m in trending only). Con
 **Step 5 — Post-trade debrief:**
 - Grade execution (AA+/A/B) — not the outcome
 - Identify single most important lesson
-- Update trade log
+- Tell Paul to log the trade in the **Trade Log Agent** (separate session at `trade_log/` directory)
+
+**IMPORTANT — Trade Log is a separate agent.**
+The coaching session does NOT read or write `trade_log.json`. All logging, performance reviews, and psychology Q&A are handled in a dedicated session opened from the `trade_log/` subdirectory. This keeps coaching context lean. Never load trade_log.json during a live coaching session.
 
 ---
 
@@ -461,6 +501,7 @@ Highest quality level: Weekly POC + Session POC in same zone, or Previous + Curr
 
 ### 3.3 The Opening Gap Trade
 90% of opening gaps fill same week. Wait for fill before entries. Gap fill often creates the liquidity sweep needed.
+**Exception (Scott 26 May 2026):** A bullish opening gap driven by strong positive news has lower fill probability. Do not require it to fill as a pre-condition — look for 4H candle close confirmation instead. See Section 3.17.
 
 ### 3.4 The V-Shape Liquidity Grab
 Range builds → displacement sweeps liquidity → V-shapes back into range → runs to opposing liquidity. Entry on V-shape completion, NOT first touch of FVG.
@@ -506,6 +547,89 @@ When price compresses in fair value range:
 - Wait for clean break + 5m close beyond boundary + acceptance
 - That break replaces deeper liquidity grab as conviction signal
 - Trade direction follows breakout
+
+### 3.8 NY Session — Best Setups Often Come Later (Scott 14 May 2026)
+Scott has not taken trades in the first 30 minutes of NY open in recent weeks. Best continuations have come 1–2+ hours after open (3pm–6pm ET). Implication:
+- Do not rush into NY open just because the window has opened
+- Let price develop, let inefficiencies form, wait for the proper structure
+- The window is 13:30–15:00 UTC but quality often comes later in that window or beyond it
+
+### 3.9 NQ/ES Divergence as Reversal Signal (Scott 14 May 2026)
+When NQ and ES are diverging (one making HH while the other makes LH, or vice versa):
+- This is an early warning of potential reversal
+- Do not trade in the direction of the diverging instrument until confirmed
+- When they re-align, the direction of alignment is the trade direction
+- Scott: *"When you have diversions, it tends to be a sign of a reversal in the market."*
+
+### 3.10 Fully Efficient Market = No Entry Model (Scott 14 May 2026)
+If all timeframes (1m, 5m, 15m, 1H, 4H, daily) are very efficient (no FVGs/gaps):
+- There is NO entry model available — do not force a trade
+- Two outcomes only: price continues without pulling back (you miss it — that's fine) OR price sweeps a session low/high to create the inefficiency needed
+- Scott: *"When the market's very efficient, we either continue without pulling back or it comes and takes a low instead because we don't have any gaps."*
+- Wait for the sweep to create the gap, THEN look for the entry model
+
+### 3.11 Outsized / News-Driven Candles — Never Enter Directly (Scott 14 May 2026)
+Large singular candles (400%+ larger than surrounding candles) driven by Trump/macro news:
+- Never enter directly on or immediately after these candles
+- Wait for them to create an inefficiency/FVG and then react from it
+- The gap left by the candle is the draw — price will come back to it
+- Scott: *"I don't wanna be entering off of candles like that."*
+- These are the same as the "large singular displacement candle" risk-off rule — reduce size, wait for structure
+
+### 3.12 Multiple Stacked FVGs Between Entry and Target (Scott 14 May 2026)
+When evaluating an entry, check how many FVGs sit between entry and the target:
+- One FVG nearby → acceptable, can move SL to BE if price reacts from it and continue
+- Multiple FVGs stacked closely → skip the trade. Too many potential reversal points
+- One FVG near entry + one beyond a structural high → acceptable (structural high acts as filter)
+- Scott: *"If one's very close by, especially when there's a number of them, I don't like taking those entries. I'd rather there be one, and only one."*
+
+### 3.13 Failed Continuation = Opposite Liquidity is the New Draw (Scott 14 May 2026)
+When a continuation trade fails (price rejects and reverses):
+- Immediately flip the draw — the opposite session low/high becomes the new target
+- Do not try to re-enter in the same direction
+- Wait for the opposite liquidity to be swept, then reassess
+- Scott: *"I would not expect prices to continue higher from here, so we can expect that 15-minute-inducing bullish candle, the New York opening low, to be taken next."*
+
+### 3.14 4H Candle Close as the Key Confirmation Mechanism (Scott 26 May 2026)
+The 4H candle close is the primary confirmation for HTF bias shifts and gap entries:
+- **4H candle closes ABOVE a gap** → bullish confirmation — bias locked, look for long entry model
+- **4H candle closes BELOW the top of a gap** (even if the body is bullish) → NOT confirmation → expect price to edge lower first into a 15m or session low before travelling higher
+- A wick above the gap with close below = potential reaction lower, not a continuation signal
+- Scott: *"If we don't close above [the gap], what price could do is edge lower first — maybe something on the 15 minute, maybe into a low before travelling higher."*
+- This rule prevents premature entries on wicks and partial closes. Wait for the full 4H candle to close before committing.
+
+### 3.15 External Structure — Efficiency Check Before Entries (Scott 26 May 2026)
+In external structure (ATH territory), run a daily efficiency check as the first step:
+- Is the daily chart efficient (no open FVGs below)?
+- If daily is efficient but 4H has an open gap → the 4H gap is the primary draw on any pullback
+- If 4H gap was created by a Sunday/pre-market opening move → it is a valid intraday reference level
+- London sweeping Asia lows while sitting inside the **lower 50%** of a 4H gap + subsequent market structure shift = valid bullish setup context
+- In ATH external structure, the 4H gap from the most recent opening (even if created pre-market) is the key level — not historical POCs which are too far below to matter
+
+### 3.16 Session Low + 15m Gap = Highest Quality Entry Trigger (Scott 26 May 2026)
+For the cleanest long setups in trending/external structure conditions:
+- **Primary trigger:** Session low swept + 15m FVG left above the swept level → that FVG is the entry zone
+- **Secondary confirmation:** Volume node (LVN) at the same area adds confluence but is not required alone
+- Volume nodes without a session low or 15m gap = insufficient for entry — too vague, too broad
+- Scott: *"I want to see the low being taken and then a 15-minute gap. That's what I want to see for the cleanest entry."*
+- If only a volume node is present with no gap/sweep → wait for structure to develop further
+
+### 3.17 Opening Gap Directionality — News Context Matters (Scott 26 May 2026)
+Not all opening gaps behave the same way:
+- **Bullish opening gap driven by positive news** → less likely to fill than a standard gap. The positive catalyst creates genuine follow-through buying. 90% fill rule applies less reliably.
+- **Opening gap from negative/fear-driven news** → standard 90% fill rule applies as normal
+- **Bearish opening gap** → high probability of fill (shorts cover, buyers step in)
+- Action: Check the news context when an opening gap appears. If it's a bullish gap on strong positive news, do NOT wait for the fill as a pre-condition for entry — look for the 4H candle close confirmation instead.
+- Scott: *"With a bearish gap, you'd expect it to fill quite quickly. With a bullish gap on positive news, it might not fill in the same way."*
+
+### 3.18 First Trading Day of the Week — Maximum Patience (Scott 26 May 2026)
+The first trading day of any week (or after a bank holiday) requires highest patience:
+- The market needs to settle and establish intent before committing to a direction
+- Do not force a trade because the window is open or a pattern appears
+- Only take the trade if the setup is so obvious it "slaps you across the face" — no convincing required
+- Scott: *"On the first trading day of the week, I want to sit on my hands. I want to wait for something so obvious. If you have any doubts, just don't trade."*
+- *"Just because the market is moving in one direction doesn't mean you should be involved."*
+- This is stricter than the standard Monday rule — applies equally to any first-trading-day-of-week (e.g. Tuesday after Monday bank holiday)
 
 ---
 
